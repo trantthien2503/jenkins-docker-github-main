@@ -1,24 +1,31 @@
 pipeline {
     agent any
     environment {
-        IMG_NAME = 'jenkins-docker-github-app'
-        DOCKER_REPO = 'trantthien2503/mmtnc-github-jenkins-docker'
+        DOCKER_IMAGE = 'jenkins-docker-github-app'
     }
     stages {
-        stage('build') {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
             steps {
                 script {
-                        sh 'docker build -t ${IMG_NAME} .'
-                        sh 'docker tag ${IMG_NAME} ${DOCKER_REPO}:${IMG_NAME}'
+                    // Build Docker image
+                    sh 'docker build -t ${DOCKER_IMAGE} .'
+                    sh 'docker tag ${DOCKER_IMAGE} trantthien2503/mmtnc-github-jenkins-docker:${DOCKER_IMAGE}'
                 }
             }
         }
-        stage('push') {
+        stage('Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DockerHub-LG', passwordVariable: 'password', usernameVariable: 'username')]) {
+                withCredentials([usernamePassword(credentialsId: 'DockerHub-LG', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
-                        sh 'echo ${password} | docker login -u ${username} --password-stdin'
-                        sh 'docker push ${DOCKER_REPO}:${IMG_NAME}'
+                        // Login to Docker Hub
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        // Push Docker image
+                        sh 'docker push trantthien2503/mmtnc-github-jenkins-docker:jenkins-docker-github-app'
                     }
                 }
             }
