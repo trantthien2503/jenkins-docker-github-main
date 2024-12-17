@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        IMG_NAME = 'my-nx'
-        DOCKER_REPO = 'joska99/labs-images'
+        IMG_NAME = 'jenkins-docker-github-app'
+        DOCKER_REPO = 'trantthien2503/mmtnc-github-jenkins-docke'
     }
     stages {
         stage('build') {
@@ -15,9 +15,9 @@ pipeline {
         }
         stage('push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DockerHub-LG', passwordVariable: 'PSWD', usernameVariable: 'LOGIN')]) {
+                withCredentials([usernamePassword(credentialsId: 'DockerHub-LG', passwordVariable: 'password', usernameVariable: 'username')]) {
                     script {
-                        sh 'echo ${PSWD} | docker login -u ${LOGIN} --password-stdin'
+                        sh 'echo ${password} | docker login -u ${username} --password-stdin'
                         sh 'docker push ${DOCKER_REPO}:${IMG_NAME}'
                     }
                 }
