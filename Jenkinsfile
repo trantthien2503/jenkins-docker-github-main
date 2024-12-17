@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         IMG_NAME = 'jenkins-docker-github-app'
-        DOCKER_REPO = 'trantthien2503/mmtnc-github-jenkins-docke'
+        DOCKER_REPO = 'trantthien2503/mmtnc-github-jenkins-docker'
     }
     stages {
         stage('build') {
